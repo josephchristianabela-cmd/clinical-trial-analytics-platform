@@ -28,6 +28,9 @@ jobs:
       run: |
         Rscript -e "install.packages(c('dplyr', 'gt', 'haven', 'survival', 'ggfortify', 'ggplot2', 'rmarkdown', 'shiny', 'shinydashboard'))"
 
+    - name: Set up Pandoc Dependency Engine
+      uses: r-lib/actions/setup-pandoc@v2
+
     - name: Execute Automated Regulatory Document Compilation
       run: |
         Rscript -e "rmarkdown::render('reports/05_regulatory_review.Rmd', output_dir = 'reports')"
