@@ -30,18 +30,19 @@ library(gt)
 library(haven)
 library(survival)
 
+
 # ==============================================================================
 # DATA LOADING & PATHING
 # ==============================================================================
-adsl_path <- "../data/adam/adsl.xpt"
-if(!file.exists(adsl_path)) adsl_path <- "data/adam/adsl.xpt"
-if(!file.exists(adsl_path)) adsl_path <- "../adsl.xpt"  # <-- FIX: Catches file when running from reports/ folder on GitHub
-if(!file.exists(adsl_path)) adsl_path <- "adsl.xpt"
+adsl_path <- list.files(path = "..", pattern = "adsl.xpt", recursive = TRUE, full.names = TRUE)[1]
+if (is.na(adsl_path) || length(adsl_path) == 0) {
+  adsl_path <- list.files(path = ".", pattern = "adsl.xpt", recursive = TRUE, full.names = TRUE)[1]
+}
 
-adae_path <- "../data/adam/adae.xpt"
-if(!file.exists(adae_path)) adae_path <- "data/adam/adae.xpt"
-if(!file.exists(adae_path)) adae_path <- "../adae.xpt"  # <-- FIX: Catches file when running from reports/ folder on GitHub
-if(!file.exists(adae_path)) adae_path <- "adae.xpt"
+adae_path <- list.files(path = "..", pattern = "adae.xpt", recursive = TRUE, full.names = TRUE)[1]
+if (is.na(adae_path) || length(adae_path) == 0) {
+  adae_path <- list.files(path = ".", pattern = "adae.xpt", recursive = TRUE, full.names = TRUE)[1]
+}
 
 # Read and safely protect treatment column mappings
 adsl <- read_xpt(adsl_path)
