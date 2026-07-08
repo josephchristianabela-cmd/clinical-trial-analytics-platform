@@ -15,10 +15,24 @@ adtte <- read_xpt("data/adam/adtte.xpt")
 if(!dir.exists("data/outputs")) dir.create("data/outputs", recursive = TRUE)
 if(!dir.exists("reports/tfl_outputs")) dir.create("reports/tfl_outputs", recursive = TRUE)
 # =========================================================================
-# 2. Filter for Target Parameter (Time to First Dermatologic Event)
+# 2. Filter for Target Parameter Safely
 # =========================================================================
+# DYNAMIC CHECK: Fall back to PFS if legacy TTDE parameter is not present
+available_params <- unique(adtte$PARAMCD)
+
+if ("TTDE" %in% available_params) {
+  target_param <- "TTDE"
+  message("[INFO] Extracting parameter: TTDE (Time to First Dermatologic Event)")
+} else if ("PFS" %in% available_params) {
+  target_param = "PFS"
+  message("[INFO] Legacy parameter TTDE not found. Falling back to Oncology tier parameter: PFS (Progression Free Survival)")
+} else {
+  target_param = available_params[1]
+  message(paste("[INFO] Falling back to first available parameter:", target_param))
+}
+
 surv_data <- adtte %>% 
-  filter(PARAMCD == "TTDE")
+  filter(PARAMCD == target_param)
 
 # DYNAMIC ALIGNMENT: Handle Planned vs Actual vs Oncology notation variants safely
 if (!"TRTP" %in% names(surv_data)) {
@@ -33,15 +47,16 @@ if (!"TRTP" %in% names(surv_data)) {
   }
 }
 
-# Ensure Placebo is the reference group using TRTP
-# Note: adtte_onco uses variants like "Placebo", "Xanomeline Low Dose", etc. 
-# We use intersect to match whatever exact string levels exist in this data cut.
+# Ensure treatment arm is a clean factor using whatever levels exist in the data
 unique_trtp <- unique(surv_data$TRTP)
-target_levels <- intersect(c("Placebo", "Xanomeline Low Dose", "Xanomeline High Dose"), unique_trtp)
+target_levels <- intersect(c("Placebo", "Xanomeline Low Dose", "Xanomeline High Dose", 
+                             "Active", "Low Dose", "High Dose", "Screening"), unique_trtp)
+
+# Fallback if specific named arms aren't in this data slice
+if(length(target_levels) == 0) target_levels <- unique_trtp
 
 surv_data <- surv_data %>%
   mutate(TRTP = factor(TRTP, levels = target_levels))
-
 # =========================================================================
 # 3. Fit Kaplan-Meier Curves
 # =========================================================================
