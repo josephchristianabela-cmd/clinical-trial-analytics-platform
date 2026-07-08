@@ -19,10 +19,17 @@ domains <- list(
 
 # 3. Dynamic export function respecting regulatory folder tiering
 save_as_xpt <- function(domain_name, type) {
-  # The datasets exist in R directly as 'dm', 'adsl', etc.
-  if (exists(domain_name)) {
+  
+  # ALIGNMENT FIX: pharmaverseadam names this dataset 'adtte_onco'
+  if (domain_name == "adtte") {
+    df <- pharmaverseadam::adtte_onco
+  } else if (exists(domain_name)) {
     df <- get(domain_name)
-    
+  } else {
+    df <- NULL
+  }
+  
+  if (!is.null(df)) {
     # Dynamically direct data into data/sdtm/ or data/adam/
     target_dir <- paste0("data/", type)
     if (!dir.exists(target_dir)) dir.create(target_dir, recursive = TRUE)
