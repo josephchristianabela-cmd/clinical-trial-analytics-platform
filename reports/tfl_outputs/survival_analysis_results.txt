@@ -1,0 +1,25 @@
+=========================================================================
+CLINICAL TRIAL ANALYTICS PLATFORM - SURVIVAL ANALYSIS INFERENCE
+Protocol: CDISCPilot1 | Parameter: Time to First Dermatologic Event
+=========================================================================
+
+Call:
+coxph(formula = Surv(AVAL, CNSR == 0) ~ TRTP, data = surv_data)
+
+  n= 254, number of events= 152 
+
+                           coef exp(coef) se(coef)     z Pr(>|z|)    
+TRTPXanomeline Low Dose  1.4226    4.1477   0.2295 6.198 5.71e-10 ***
+TRTPXanomeline High Dose 1.6146    5.0260   0.2333 6.922 4.45e-12 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+                         exp(coef) exp(-coef) lower .95 upper .95
+TRTPXanomeline Low Dose      4.148     0.2411     2.645     6.504
+TRTPXanomeline High Dose     5.026     0.1990     3.182     7.939
+
+Concordance= 0.652  (se = 0.023 )
+Likelihood ratio test= 64.59  on 2 df,   p=9e-15
+Wald test            = 51.68  on 2 df,   p=6e-12
+Score (logrank) test = 60.2  on 2 df,   p=8e-14
+

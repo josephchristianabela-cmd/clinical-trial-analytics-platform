@@ -34,14 +34,12 @@ library(survival)
 # DATA LOADING & PATHING
 # ==============================================================================
 adsl_path <- "../data/adam/adsl.xpt"
-if(!file.exists(adsl_path)) adsl_path = "data/adam/adsl.xpt"
-if(!file.exists(adsl_path)) adsl_path = "../adsl.xpt"  # <-- FIX: Finds it one folder up on GitHub
-if(!file.exists(adsl_path)) adsl_path = "adsl.xpt"
+if(!file.exists(adsl_path)) adsl_path <- "data/adam/adsl.xpt"
+if(!file.exists(adsl_path)) adsl_path <- "adsl.xpt"
 
 adae_path <- "../data/adam/adae.xpt"
-if(!file.exists(adae_path)) adae_path = "data/adam/adae.xpt"
-if(!file.exists(adae_path)) adae_path = "../adae.xpt"  # <-- FIX: Finds it one folder up on GitHub
-if(!file.exists(adae_path)) adae_path = "adae.xpt"
+if(!file.exists(adae_path)) adae_path <- "data/adam/adae.xpt"
+if(!file.exists(adae_path)) adae_path <- "adae.xpt"
 
 # Read and safely protect treatment column mappings
 adsl <- read_xpt(adsl_path)

@@ -1,0 +1,10 @@
+name: dashboard
+title:
+username: josephchristianabela
+account: josephchristianabela
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 17573365
+bundleId: 12208218
+url: https://josephchristianabela.shinyapps.io/dashboard/
+version: 1
