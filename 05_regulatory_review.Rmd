@@ -35,10 +35,12 @@ library(survival)
 # ==============================================================================
 adsl_path <- "../data/adam/adsl.xpt"
 if(!file.exists(adsl_path)) adsl_path <- "data/adam/adsl.xpt"
+if(!file.exists(adsl_path)) adsl_path <- "../adsl.xpt"  # <-- FIX: Catches file when running from reports/ folder on GitHub
 if(!file.exists(adsl_path)) adsl_path <- "adsl.xpt"
 
 adae_path <- "../data/adam/adae.xpt"
 if(!file.exists(adae_path)) adae_path <- "data/adam/adae.xpt"
+if(!file.exists(adae_path)) adae_path <- "../adae.xpt"  # <-- FIX: Catches file when running from reports/ folder on GitHub
 if(!file.exists(adae_path)) adae_path <- "adae.xpt"
 
 # Read and safely protect treatment column mappings
