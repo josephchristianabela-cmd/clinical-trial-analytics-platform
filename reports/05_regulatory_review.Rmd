@@ -35,6 +35,7 @@ library(survival)
 # ==============================================================================
 adsl_path <- "../data/adam/adsl.xpt"
 if(!file.exists(adsl_path)) adsl_path <- "data/adam/adsl.xpt"
+if(!file.exists(adsl_path)) adsl_path <- "../adsl.xpt"  # <-- Catches it in root from reports/
 if(!file.exists(adsl_path)) adsl_path <- "adsl.xpt"
 
 adae_path <- "../data/adam/adae.xpt"
