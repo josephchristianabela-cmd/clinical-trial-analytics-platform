@@ -20,15 +20,27 @@ if(!dir.exists("reports/tfl_outputs")) dir.create("reports/tfl_outputs", recursi
 surv_data <- adtte %>% 
   filter(PARAMCD == "TTDE")
 
-# CHECK: If TRTP isn't there, it might be TRTA. Let's be safe:
-if(!"TRTP" %in% names(surv_data)) {
-  # If TRTP is missing, we use TRTA (Actual Treatment)
-  surv_data <- surv_data %>% rename(TRTP = TRTA)
+# DYNAMIC ALIGNMENT: Handle Planned vs Actual vs Oncology notation variants safely
+if (!"TRTP" %in% names(surv_data)) {
+  if ("TRPA" %in% names(surv_data)) {
+    surv_data <- surv_data %>% rename(TRTP = TRPA)
+  } else if ("TRTA" %in% names(surv_data)) {
+    surv_data <- surv_data %>% rename(TRTP = TRTA)
+  } else if ("ARM" %in% names(surv_data)) {
+    surv_data <- surv_data %>% rename(TRTP = ARM)
+  } else {
+    stop("[ERROR] No valid treatment arm column (TRTP, TRPA, TRTA, or ARM) found in dataset.")
+  }
 }
 
 # Ensure Placebo is the reference group using TRTP
+# Note: adtte_onco uses variants like "Placebo", "Xanomeline Low Dose", etc. 
+# We use intersect to match whatever exact string levels exist in this data cut.
+unique_trtp <- unique(surv_data$TRTP)
+target_levels <- intersect(c("Placebo", "Xanomeline Low Dose", "Xanomeline High Dose"), unique_trtp)
+
 surv_data <- surv_data %>%
-  mutate(TRTP = factor(TRTP, levels = c("Placebo", "Xanomeline Low Dose", "Xanomeline High Dose")))
+  mutate(TRTP = factor(TRTP, levels = target_levels))
 
 # =========================================================================
 # 3. Fit Kaplan-Meier Curves
