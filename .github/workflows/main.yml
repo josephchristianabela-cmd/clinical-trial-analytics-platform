@@ -19,6 +19,9 @@ jobs:
       with:
         use-public-rspm: true
 
+    - name: Set up Pandoc Dependency Engine
+      uses: r-lib/actions/setup-pandoc@v2
+
     - name: Install System Dependencies
       run: |
         sudo apt-get update
@@ -26,11 +29,14 @@ jobs:
 
     - name: Install Required Analytics Packages
       run: |
-        Rscript -e "install.packages(c('dplyr', 'gt', 'haven', 'survival', 'ggfortify', 'ggplot2', 'rmarkdown', 'shiny', 'shinydashboard'))"
+        Rscript -e "install.packages(c('dplyr', 'gt', 'haven', 'survival', 'ggfortify', 'ggplot2', 'rmarkdown', 'shiny', 'shinydashboard', 'here'))"
 
-    - name: Set up Pandoc Dependency Engine
-      uses: r-lib/actions/setup-pandoc@v2
+    - name: Execute Data Ingestion (Download PHUSE Assets)
+      # CRITICAL: This step creates the data files that the report needs!
+      run: |
+        Rscript scripts/01_data_ingestion.R
 
     - name: Execute Automated Regulatory Document Compilation
+      # knit_root_dir = getwd() forces R to use the main project folder as the "Center of the Universe"
       run: |
-        Rscript -e "rmarkdown::render('reports/05_regulatory_review.Rmd', output_dir = 'reports')"
+        Rscript -e "rmarkdown::render('reports/05_regulatory_review.Rmd', knit_root_dir = getwd(), output_dir = 'reports')"
