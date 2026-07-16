@@ -29,18 +29,41 @@ library(dplyr)
 library(gt)
 library(haven)
 library(survival)
+library(here)
 
 # ==============================================================================
-# DATA LOADING & PATHING
+# BULLETPROOF PATH RESOLUTION (ANCHORED TO PROJECT ROOT)
 # ==============================================================================
-adsl_path <- "../data/adam/adsl.xpt"
-if(!file.exists(adsl_path)) adsl_path <- "data/adam/adsl.xpt"
-if(!file.exists(adsl_path)) adsl_path <- "../adsl.xpt"  # <-- Catches it in root from reports/
-if(!file.exists(adsl_path)) adsl_path <- "adsl.xpt"
+find_file <- function(filename) {
+  # 1. Try resolving relative to project root via here()
+  root_paths <- c(
+    here::here("data", "adam", filename),
+    here::here("data", "outputs", filename),
+    here::here("data", filename),
+    here::here(filename)
+  )
+  
+  for (path in root_paths) {
+    if (file.exists(path)) return(path)
+  }
+  
+  # 2. Fallback: Search recursively from the current directory upwards/downwards
+  recursive_search <- list.files(path = "..", pattern = paste0("^", filename, "$"), recursive = TRUE, full.names = TRUE)
+  if (length(recursive_search) > 0) return(recursive_search[1])
+  
+  # 3. Fallback: Search current working directory
+  recursive_cwd <- list.files(path = ".", pattern = paste0("^", filename, "$"), recursive = TRUE, full.names = TRUE)
+  if (length(recursive_cwd) > 0) return(recursive_cwd[1])
+  
+  # Return default if not found (let haven handle the missing file error gracefully)
+  return(filename)
+}
 
-adae_path <- "../data/adam/adae.xpt"
-if(!file.exists(adae_path)) adae_path <- "data/adam/adae.xpt"
-if(!file.exists(adae_path)) adae_path <- "adae.xpt"
+adsl_path <- find_file("adsl.xpt")
+adae_path <- find_file("adae.xpt")
+
+message("Resolved ADSL path to: ", adsl_path)
+message("Resolved ADAE path to: ", adae_path)
 
 # Read and safely protect treatment column mappings
 adsl <- read_xpt(adsl_path)
