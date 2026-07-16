@@ -27,9 +27,27 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev
 
-    - name: Install Required Analytics Packages
-      run: |
-        Rscript -e "install.packages(c('dplyr', 'gt', 'haven', 'survival', 'ggfortify', 'ggplot2', 'rmarkdown', 'shiny', 'shinydashboard', 'here', 'pharmaversesdtm', 'pharmaverseadam', 'renv', 'purrr', 'tidyr', 'lubridate', 'survminer'))"
+    - name: Setup pak for High-Speed Package Installation
+      uses: r-lib/actions/setup-r-dependencies@v2
+      with:
+        packages: |
+          any::dplyr
+          any::gt
+          any::haven
+          any::survival
+          any::ggfortify
+          any::ggplot2
+          any::rmarkdown
+          any::shiny
+          any::shinydashboard
+          any::here
+          any::pharmaversesdtm
+          any::pharmaverseadam
+          any::renv
+          any::purrr
+          any::tidyr
+          any::lubridate
+          any::survminer
 
     - name: Execute Data Ingestion (Download PHUSE Assets)
       # Phase 1: Extracts baseline SDTM & ADaM domains
