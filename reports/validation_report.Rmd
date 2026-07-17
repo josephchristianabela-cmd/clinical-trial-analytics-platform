@@ -1,6 +1,6 @@
 ---
 title: "Clinical Trial Regulatory Review Notebook"
-subtitle: "ICH E9(R1) Alignment & Statistical Review Layer"
+subtitle: "ICH E9(R1) Alignment & Statistical Review Layer" 
 date: "`r Sys.Date()`"
 output: 
   html_document:
