@@ -43,14 +43,35 @@ Regulatory Reports
 
 A chronological audit was performed to verify adverse events did not occur prior to informed consent date, ensuring consistency.
 
-A cohort audit was also performed to verify patients actually exist in the master demographics database.
+Subject verification and USUBJID uniqueness was performed by a cohort audit to verify patients actually exist in the master demographics database.
 
 <img width="1162" height="576" alt="image" src="https://github.com/user-attachments/assets/ec045243-2e6d-43e5-a663-836176a62795" />
 
 
 **Statistical programmming:**
 
-Informed by the ICH E9(R1) guidelines on estimands, Time-to-event analysis was performed, using ADaM time-to-event (ADTTE) structures, right-censored observations were handled via the censoring indicator (CNSR). 
+Informed by the ICH E9(R1) guidelines on estimands:
+
+Population: a Full Analysis Set (FAS) was used.
+
+Emdpoint: Time-to-event, i.e  days from treatment start date (`TRTSDT`) to treatment end date (`TRTEDT`).
+
+Intercurrent events: discontinuation 
+
+Statistics: Hazard ratio calculated using Cox Proportional Hazards model.
+
+Time-to-treatment-discontinuation was used as an indicator of safety and tolerability, using ADaM time-to-event (ADTTE) structures, right-censored observations were handled via the censoring indicator (CNSR). 
+
+### Primary Model Outputs: Time-to-Treatment-Discontinuation
+The regression engine evaluated the relative hazard of treatment discontinuation across study arms. The model completed with stable fit metrics across all three global statistical tests ($p = 0.001$):
+
+| Treatment Arm | Hazard Ratio ($HR$) | 95% Confidence Interval | p-value |
+| :--- | :---: | :---: | :---: |
+| **Xanomeline Low Dose** | 1.55 | 1.15 – 2.10 | 0.005 |
+| **Xanomeline High Dose** | 1.69 | 1.25 – 2.28 | < 0.001 |
+
+*   **Model Discriminatory Power:** The framework achieved a Concordance index (C-index) of **0.588**.
+*   **Clinical Interpretation:** Both active treatment arms show a statistically significant increase in the rate of discontinuation compared to placebo, indicating a clear, dose-dependent tolerability signal.
 
 A Cox proportional hazards model was fit to estimate hazard ratios and treatment effect sizes.
 
