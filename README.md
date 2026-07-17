@@ -63,7 +63,7 @@ Statistics: Hazard ratio calculated using Cox Proportional Hazards model.
 The time-to-first dermatologic event was evaluated using CDISC ADaM time-to-event (`ADTTE`) structures. Right-censored observations were handled programmatically via the formal censoring indicator mapping (`CNSR == 0` defining an event occurrence).
 
 ### Primary Model Outputs: Time to First Dermatologic Event
-The regression engine evaluated the relative hazard of treatment discontinuation across study arms. The model completed with stable fit metrics across all three global statistical tests ($p = 0.001$):
+The regression engine evaluated the relative hazard of experiencing a dermatologic event across active study arms compared to placebo. The model completed with stable fit metrics across all three global statistical tests ($p < 0.0001$):
 
 | Treatment Arm | Hazard Ratio ($HR$) | 95% Confidence Interval | p-value |
 | :--- | :---: | :---: | :---: |
