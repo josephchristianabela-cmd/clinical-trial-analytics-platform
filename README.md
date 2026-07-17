@@ -14,21 +14,27 @@ The workflow demonstrates traceability from SDTM domains to ADaM analysis datase
 
 **Workflow**
 Raw CDISC Data
+
       │
       ▼
 SDTM Domains
+
       │
       ▼
 Validation & Integrity Checks
+
       │
       ▼
 ADaM Analysis Datasets
+
       │
       ▼
 Statistical Programming
+
       │
       ▼
 TFLs & Survival Analysis
+
       │
       ▼
 Regulatory Reports
