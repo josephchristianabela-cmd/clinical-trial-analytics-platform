@@ -39,11 +39,14 @@ TFLs & Survival Analysis
       ▼
 Regulatory Reports
 
-**Validation and integrity checks:**
+**Data Validation:**
 
 A chronological audit was performed to verify adverse events did not occur prior to informed consent date, ensuring consistency.
 
 A cohort audit was also performed to verify patients actually exist in the master demographics database.
+
+<img width="1162" height="576" alt="image" src="https://github.com/user-attachments/assets/ec045243-2e6d-43e5-a663-836176a62795" />
+
 
 **Statistical programmming:**
 
