@@ -22,4 +22,4 @@ Concordance= 0.652  (se = 0.023 )
 Likelihood ratio test= 64.59  on 2 df,   p=9e-15
 Wald test            = 51.68  on 2 df,   p=6e-12
 Score (logrank) test = 60.2  on 2 df,   p=8e-14
-
+ 
