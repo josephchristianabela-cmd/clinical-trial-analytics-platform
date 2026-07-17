@@ -4,7 +4,7 @@ This platform aims to demonstrate end to end clinical trial data analytics using
 
 The objective of this project is to demonstrate practical application of clinical data management, statistical programming, validation procedures, and reporting using open source CDISC datasets.
 
-Programmes used: RStudio, Rshiny, R Markdown, CDISC & GitHub
+Programs used: RStudio, Rshiny, R Markdown, CDISC & GitHub
 
 **Dataset** 
 
@@ -52,15 +52,15 @@ Subject verification and USUBJID uniqueness was performed by a cohort audit to v
 
 Informed by the ICH E9(R1) guidelines on estimands:
 
-Population: a Full Analysis Set (FAS) was used.
+Population: a Full Analysis Set (FAS) was used (n = 254). 
 
-Endpoint: Time-to-event, i.e  days from treatment start date (`TRTSDT`) to treatment end date (`TRTEDT`).
+Endpoint: Time-to-event, i.e  days from treatment start date (`TRTSDT`) to the First Dermatologic Event.
 
 Intercurrent events: discontinuation 
 
 Statistics: Hazard ratio calculated using Cox Proportional Hazards model.
 
-Time-to-treatment-discontinuation was used as an indicator of safety and tolerability, using ADaM time-to-event (ADTTE) structures, right-censored observations were handled via the censoring indicator (CNSR). 
+The time-to-first dermatologic event was evaluated using CDISC ADaM time-to-event (`ADTTE`) structures. Right-censored observations were handled programmatically via the formal censoring indicator mapping (`CNSR == 0` defining an event occurrence).
 
 ### Primary Model Outputs: Time-to-Treatment-Discontinuation
 The regression engine evaluated the relative hazard of treatment discontinuation across study arms. The model completed with stable fit metrics across all three global statistical tests ($p = 0.001$):
