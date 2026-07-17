@@ -4,7 +4,7 @@ This platform aims to demonstrate end to end clinical trial data analytics using
 
 The objective of this project is to demonstrate practical application of clinical data management, statistical programming, validation procedures, and reporting using open source CDISC datasets.
 
-**Dataset**
+**Dataset** 
 
 The CDISC Pilot Study Dataset investigating the drug Xanomeline in patients with mild-to-moderate Alzheimer's disease is used. 
 The workflow demonstrates traceability from SDTM domains to ADaM analysis datasets and final statistical outputs.
