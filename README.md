@@ -54,7 +54,7 @@ Informed by the ICH E9(R1) guidelines on estimands:
 
 Population: a Full Analysis Set (FAS) was used.
 
-Emdpoint: Time-to-event, i.e  days from treatment start date (`TRTSDT`) to treatment end date (`TRTEDT`).
+Endpoint: Time-to-event, i.e  days from treatment start date (`TRTSDT`) to treatment end date (`TRTEDT`).
 
 Intercurrent events: discontinuation 
 
@@ -70,8 +70,8 @@ The regression engine evaluated the relative hazard of treatment discontinuation
 | **Xanomeline Low Dose** | 4.15 | 2.65 – 6.50 | < 0.001 |
 | **Xanomeline High Dose** | 5.03 | 3.18 – 7.94 | < 0.001 |
 
-*   **Model Discriminatory Power:** The framework achieved a Concordance index (C-index) of **0.588**.
-*   **Clinical Interpretation:** Both active treatment arms show a statistically significant increase in the rate of discontinuation compared to placebo, indicating a clear, dose-dependent tolerability signal.
+**Model Discriminatory Power:** The framework achieved a Concordance index (C-index) of **0.652**.
+*   **Clinical Interpretation:** Both active treatment arms show a highly statistically significant, dose-dependent increase in the hazard of developing a dermatologic event compared to placebo, identifying a prominent safety and tolerability signal.
 
 A Cox proportional hazards model was fit to estimate hazard ratios and treatment effect sizes.
 
