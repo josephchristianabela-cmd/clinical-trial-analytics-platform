@@ -4,10 +4,34 @@ This platform aims to demonstrate end to end clinical trial data analytics using
 
 The objective of this project is to demonstrate practical application of clinical data management, statistical programming, validation procedures, and reporting using open source CDISC datasets.
 
+Programmes used: RStudio, Rshiny, R Markdown, CDISC & GitHub
+
 **Dataset** 
 
 The CDISC Pilot Study Dataset investigating the drug Xanomeline in patients with mild-to-moderate Alzheimer's disease is used. 
+SDTM domains used (DM, AE, LB), ADaM datasets (ADSL, ADAE, ADTTE)
 The workflow demonstrates traceability from SDTM domains to ADaM analysis datasets and final statistical outputs.
+
+**Workflow**
+Raw CDISC Data
+      │
+      ▼
+SDTM Domains
+      │
+      ▼
+Validation & Integrity Checks
+      │
+      ▼
+ADaM Analysis Datasets
+      │
+      ▼
+Statistical Programming
+      │
+      ▼
+TFLs & Survival Analysis
+      │
+      ▼
+Regulatory Reports
 
 **Validation and integrity checks:**
 
