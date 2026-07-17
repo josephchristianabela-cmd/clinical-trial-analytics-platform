@@ -67,15 +67,17 @@ The regression engine evaluated the relative hazard of treatment discontinuation
 
 | Treatment Arm | Hazard Ratio ($HR$) | 95% Confidence Interval | p-value |
 | :--- | :---: | :---: | :---: |
-| **Xanomeline Low Dose** | 1.55 | 1.15 – 2.10 | 0.005 |
-| **Xanomeline High Dose** | 1.69 | 1.25 – 2.28 | < 0.001 |
+| **Xanomeline Low Dose** | 4.15 | 2.65 – 6.50 | < 0.001 |
+| **Xanomeline High Dose** | 5.03 | 3.18 – 7.94 | < 0.001 |
 
 *   **Model Discriminatory Power:** The framework achieved a Concordance index (C-index) of **0.588**.
 *   **Clinical Interpretation:** Both active treatment arms show a statistically significant increase in the rate of discontinuation compared to placebo, indicating a clear, dose-dependent tolerability signal.
 
 A Cox proportional hazards model was fit to estimate hazard ratios and treatment effect sizes.
 
-Kaplan–Meier curves were plotted; and dynamic summary tables used to report findings.
+### Figure 1: Kaplan-Meier Survival Curve
+<img width="3000" height="2100" alt="km_plot_dermatitis" src="https://github.com/user-attachments/assets/84bab645-3581-4392-99b6-eee9829435c7" />
+
 
 **Reproducibility**
 
