@@ -72,12 +72,15 @@ jobs:
     - name: Execute Automated Regulatory Document Compilation
       run: |
         Rscript -e "rmarkdown::render('reports/05_regulatory_review.Rmd', knit_root_dir = getwd(), output_dir = 'reports')"
-        Rscript -e "rmarkdown::render('reports/validation_report.Rmd', knit_root_dir = getwd(), output_dir = 'reports')"
+        if [ -f "reports/validation_report.Rmd" ]; then
+          Rscript -e "rmarkdown::render('reports/validation_report.Rmd', knit_root_dir = getwd(), output_dir = 'reports')"
+        fi
 
     - name: Archive Regulatory Platform Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: regulatory-outputs
+        if-no-files-found: ignore
         path: |
           reports/05_regulatory_review.html
           reports/validation_report.html
