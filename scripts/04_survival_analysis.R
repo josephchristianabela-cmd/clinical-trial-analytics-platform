@@ -14,27 +14,28 @@ adtte <- read_xpt("data/adam/adtte.xpt")
 # Create downstream artifact storage if missing
 if(!dir.exists("data/outputs")) dir.create("data/outputs", recursive = TRUE)
 if(!dir.exists("reports/tfl_outputs")) dir.create("reports/tfl_outputs", recursive = TRUE)
+
 # =========================================================================
 # 2. Filter for Target Parameter Safely
 # =========================================================================
-# DYNAMIC CHECK: Fall back to PFS if legacy TTDE parameter is not present
 available_params <- unique(adtte$PARAMCD)
+message(paste("[DIAGNOSTIC] Available PARAMCDs in ADTTE:", paste(available_params, collapse = ", ")))
 
-if ("TTDE" %in% available_params) {
-  target_param <- "TTDE"
-  message("[INFO] Extracting parameter: TTDE (Time to First Dermatologic Event)")
-} else if ("PFS" %in% available_params) {
-  target_param = "PFS"
-  message("[INFO] Legacy parameter TTDE not found. Falling back to Oncology tier parameter: PFS (Progression Free Survival)")
+# Explicit check for Dermatologic Event parameters in CDISC standards
+dermatitis_candidates <- c("TTDE", "EFFTTRM", "DERM", "TTDERM")
+matched_param <- intersect(dermatitis_candidates, available_params)
+
+if (length(matched_param) > 0) {
+  target_param <- matched_param[1]
+  message(paste("[INFO] Extracting Dermatologic Parameter:", target_param))
 } else {
-  target_param = available_params[1]
-  message(paste("[INFO] Falling back to first available parameter:", target_param))
+  stop("[ERROR] Could not find a Dermatologic Event parameter (TTDE, EFFTTRM, DERM) in ADTTE dataset.")
 }
 
 surv_data <- adtte %>% 
   filter(PARAMCD == target_param)
 
-# DYNAMIC ALIGNMENT: Handle Planned vs Actual vs Oncology notation variants safely
+# DYNAMIC ALIGNMENT: Handle Treatment Column Names
 if (!"TRTP" %in% names(surv_data)) {
   if ("TRPA" %in% names(surv_data)) {
     surv_data <- surv_data %>% rename(TRTP = TRPA)
@@ -43,20 +44,15 @@ if (!"TRTP" %in% names(surv_data)) {
   } else if ("ARM" %in% names(surv_data)) {
     surv_data <- surv_data %>% rename(TRTP = ARM)
   } else {
-    stop("[ERROR] No valid treatment arm column (TRTP, TRPA, TRTA, or ARM) found in dataset.")
+    stop("[ERROR] No valid treatment arm column found in dataset.")
   }
 }
 
-# Ensure treatment arm is a clean factor using whatever levels exist in the data
-unique_trtp <- unique(surv_data$TRTP)
-target_levels <- intersect(c("Placebo", "Xanomeline Low Dose", "Xanomeline High Dose", 
-                             "Active", "Low Dose", "High Dose", "Screening"), unique_trtp)
-
-# Fallback if specific named arms aren't in this data slice
-if(length(target_levels) == 0) target_levels <- unique_trtp
-
+# Ensure Placebo is set as the baseline control reference level for Cox Model
 surv_data <- surv_data %>%
-  mutate(TRTP = factor(TRTP, levels = target_levels))
+  mutate(TRTP = factor(TRTP)) %>%
+  mutate(TRTP = relevel(TRTP, ref = "Placebo"))
+
 # =========================================================================
 # 3. Fit Kaplan-Meier Curves
 # =========================================================================
@@ -70,13 +66,20 @@ km_fit <- survfit(Surv(AVAL, CNSR == 0) ~ TRTP, data = surv_data)
 # =========================================================================
 message("[MODELING] Fitting Cox Proportional Hazards Regression...")
 
-# Use TRTP to match the KM fit and the data structure
-cox_model <- coxph(Surv(AVAL, CNSR == 0) ~ TRTP, data = surv_data)
+# Explicitly create a binary event indicator where 1 = Event, 0 = Censored
+surv_data$status <- ifelse(surv_data$CNSR == 0, 1, 0)
+
+# Print a console summary to verify the event-to-censoring breakdown before running the model
+message(paste("[DATA CHECK] Total Patients:", nrow(surv_data), 
+              "| Total Events:", sum(surv_data$status == 1), 
+              "| Total Censored:", sum(surv_data$status == 0)))
+
+# Fit the Cox model using the verified status variable
+cox_model <- coxph(Surv(AVAL, status) ~ TRTP, data = surv_data)
 cox_summary <- summary(cox_model)
 
 saveRDS(cox_summary, "data/outputs/cox_summary.rds")
 message("[SUCCESS] Exported: Cox summary metrics to data/outputs/")
-
 # =========================================================================
 # 5. Export Static Text Report for Dossier Compliance
 # =========================================================================
