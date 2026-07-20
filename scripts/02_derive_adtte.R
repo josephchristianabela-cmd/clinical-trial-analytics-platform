@@ -127,8 +127,10 @@ print(event_summary)
 if (!dir.exists("data/adam")) dir.create("data/adam", recursive = TRUE)
 if (!dir.exists("data/outputs")) dir.create("data/outputs", recursive = TRUE)
 
+# Export primary and alias datasets for downstream script compatibility
 write_xpt(adtte_derm, "data/adam/adtte_derm.xpt")
+write_xpt(adtte_derm, "data/adam/adtte.xpt")
 saveRDS(event_summary, "data/outputs/adtte_derivation_log.rds")
 
-message("[SUCCESS] Exported: adtte_derm.xpt to data/adam/")
+message("[SUCCESS] Exported: adtte_derm.xpt and adtte.xpt to data/adam/")
 message("--- ADTTE Derivation Complete ---")
