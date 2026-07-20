@@ -50,38 +50,31 @@ jobs:
           any::survminer
 
     - name: Execute Data Ingestion (Download PHUSE Assets)
-      # Phase 1: Extracts baseline SDTM & ADaM domains
       run: |
         Rscript scripts/01_data_ingestion.R
 
     - name: Derive Traceable ADTTE (Time to First Dermatologic AE)
-      # Phase 2: Derives the safety TTE endpoint in-house from this study's own AE domain
       run: |
         Rscript scripts/02_derive_adtte.R
 
     - name: Execute TFL Generation Engine (Tables, Figures, Listings)
-      # Phase 3: Creates demographic matrices and raw adverse event summaries
       run: |
         Rscript scripts/03_tfl_generation.R
 
     - name: Execute Regulatory Data Audit (Validation Logic)
-      # Phase 4: Audits temporal chronology checks, cross-domain integrity, and ADTTE traceability
       run: |
         Rscript scripts/04_validation.R
 
     - name: Execute Time-To-Event Survival Engine
-      # Phase 5: Models semi-parametric Cox PH models and exports KM curves
       run: |
         Rscript scripts/05_survival_analysis.R
 
     - name: Execute Automated Regulatory Document Compilation
-      # Final Layer: Renders compiled regulatory notebook and validation report, both anchored to project root
       run: |
         Rscript -e "rmarkdown::render('reports/05_regulatory_review.Rmd', knit_root_dir = getwd(), output_dir = 'reports')"
         Rscript -e "rmarkdown::render('reports/validation_report.Rmd', knit_root_dir = getwd(), output_dir = 'reports')"
 
     - name: Archive Regulatory Platform Artifacts
-      # This saves all generated files so you can physically download them from GitHub!
       uses: actions/upload-artifact@v4
       with:
         name: regulatory-outputs
