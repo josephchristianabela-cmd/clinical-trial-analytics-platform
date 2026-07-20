@@ -34,7 +34,6 @@ library(survival)
 # BULLETPROOF PATH RESOLUTION (NO EXTERNAL DEPENDENCIES)
 # ==============================================================================
 find_file <- function(filename) {
-  # 1. Try standard project relative paths
   root_paths <- c(
     file.path("..", "data", "adam", filename),
     file.path("..", "data", "outputs", filename),
@@ -49,11 +48,9 @@ find_file <- function(filename) {
     if (file.exists(path)) return(path)
   }
   
-  # 2. Search recursively upwards from current execution dir
   recursive_search <- list.files(path = "..", pattern = paste0("^", filename, "$"), recursive = TRUE, full.names = TRUE)
   if (length(recursive_search) > 0) return(recursive_search[1])
   
-  # 3. Search current working directory
   recursive_cwd <- list.files(path = ".", pattern = paste0("^", filename, "$"), recursive = TRUE, full.names = TRUE)
   if (length(recursive_cwd) > 0) return(recursive_cwd[1])
   
@@ -64,7 +61,6 @@ adsl_path  <- find_file("adsl.xpt")
 adae_path  <- find_file("adae.xpt")
 adtte_path <- find_file("adtte.xpt")
 
-# Fallback check for adtte_derm.xpt if adtte.xpt isn't located directly
 if (!file.exists(adtte_path)) {
   adtte_path <- find_file("adtte_derm.xpt")
 }
@@ -146,3 +142,45 @@ if (file.exists(adtte_path)) {
   adtte <- read_xpt(adtte_path)
   
   # Select target dermatologic parameter
+  available_params <- unique(adtte$PARAMCD)
+  dermatitis_candidates <- c("TTDE", "EFFTTRM", "DERM", "TTDERM")
+  matched_param <- intersect(dermatitis_candidates, available_params)
+  
+  if (length(matched_param) > 0) {
+    target_param <- matched_param[1]
+  } else {
+    target_param <- available_params[1]
+  }
+  
+  survival_data <- adtte %>% 
+    filter(PARAMCD == target_param)
+  
+  # Normalize Treatment Arm column
+  if (!"ARM" %in% names(survival_data)) {
+    if ("TRT01P" %in% names(survival_data)) {
+      survival_data <- survival_data %>% rename(ARM = TRT01P)
+    } else if ("TRT01A" %in% names(survival_data)) {
+      survival_data <- survival_data %>% rename(ARM = TRT01A)
+    } else if ("TRTP" %in% names(survival_data)) {
+      survival_data <- survival_data %>% rename(ARM = TRTP)
+    } else if ("TRTA" %in% names(survival_data)) {
+      survival_data <- survival_data %>% rename(ARM = TRTA)
+    }
+  }
+  
+  # Set Placebo as reference baseline control
+  survival_data <- survival_data %>%
+    mutate(ARM = factor(ARM)) %>%
+    mutate(ARM = relevel(ARM, ref = "Placebo"))
+  
+  # Programmatic CDISC Censoring Mapping (CNSR == 0 is an Event)
+  survival_data$status <- ifelse(survival_data$CNSR == 0, 1, 0)
+  
+  cox_fit <- coxph(Surv(AVAL, status) ~ ARM, data = survival_data)
+  
+  cat("\n--- QUESTION C: COX REGRESSION SURVIVAL ANALYSIS SUMMARY ---\n")
+  print(summary(cox_fit))
+  
+} else {
+  cat("\nWARNING: ADTTE dataset missing. Skipping Question C output.\n")
+}
