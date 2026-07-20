@@ -35,9 +35,13 @@ if (length(matched_param) > 0) {
 surv_data <- adtte %>% 
   filter(PARAMCD == target_param)
 
-# DYNAMIC ALIGNMENT: Handle Treatment Column Names
+# DYNAMIC ALIGNMENT: Handle Treatment Column Names (Added TRT01P / TRT01A support)
 if (!"TRTP" %in% names(surv_data)) {
-  if ("TRPA" %in% names(surv_data)) {
+  if ("TRT01P" %in% names(surv_data)) {
+    surv_data <- surv_data %>% rename(TRTP = TRT01P)
+  } else if ("TRT01A" %in% names(surv_data)) {
+    surv_data <- surv_data %>% rename(TRTP = TRT01A)
+  } else if ("TRPA" %in% names(surv_data)) {
     surv_data <- surv_data %>% rename(TRTP = TRPA)
   } else if ("TRTA" %in% names(surv_data)) {
     surv_data <- surv_data %>% rename(TRTP = TRTA)
