@@ -6,6 +6,14 @@ library(lubridate)
 library(tidyr)
 
 message("--- Starting: Regulatory Data Audit ---")
+
+parse_clinical_date <- function(date_vec) {
+  if (is.numeric(date_vec)) {
+    return(as.Date(date_vec, origin = "1970-01-01"))
+  }
+  return(as.Date(substr(as.character(date_vec), 1, 10)))
+}
+
 # 1. Ingest Data for Auditing
 adtte_file <- if (file.exists("data/adam/adtte_derm.xpt")) {
   "data/adam/adtte_derm.xpt"
