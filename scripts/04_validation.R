@@ -6,28 +6,24 @@ library(lubridate)
 library(tidyr)
 
 message("--- Starting: Regulatory Data Audit ---")
-
 # 1. Ingest Data for Auditing
+adtte_file <- if (file.exists("data/adam/adtte_derm.xpt")) {
+  "data/adam/adtte_derm.xpt"
+} else if (file.exists("data/adam/adtte.xpt")) {
+  "data/adam/adtte.xpt"
+} else {
+  stop("[ERROR] Missing ADTTE dataset. Verify adtte_derm.xpt or adtte.xpt exists in data/adam/.")
+}
+
 if (!file.exists("data/adam/adsl.xpt") || !file.exists("data/adam/adae.xpt") ||
-    !file.exists("data/sdtm/dm.xpt") || !file.exists("data/adam/adtte_derm.xpt")) {
-  stop("[ERROR] Missing input datasets. Verify adsl.xpt, adae.xpt, sdtm/dm.xpt, and adtte_derm.xpt exist.")
+    !file.exists("data/sdtm/dm.xpt")) {
+  stop("[ERROR] Missing input datasets. Verify adsl.xpt, adae.xpt, and sdtm/dm.xpt exist.")
 }
 
 adsl  <- read_xpt("data/adam/adsl.xpt")
 adae  <- read_xpt("data/adam/adae.xpt")
 dm    <- read_xpt("data/sdtm/dm.xpt")
-adtte <- read_xpt("data/adam/adtte_derm.xpt")
-
-# Infrastructure setup
-if(!dir.exists("data/outputs")) dir.create("data/outputs", recursive = TRUE)
-
-# Robust date normalizer helper function
-parse_clinical_date <- function(date_vec) {
-  if (is.numeric(date_vec)) {
-    return(as.Date(date_vec, origin = "1970-01-01"))
-  }
-  return(as.Date(substr(as.character(date_vec), 1, 10)))
-}
+adtte <- read_xpt(adtte_file)
 
 # =========================================================================
 # 2. Temporal Validation: Chronology Checks
